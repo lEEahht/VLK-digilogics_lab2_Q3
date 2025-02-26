@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module BooleanLogicFunction (
+module Q3_project (
     input  wire [7:0] A,   // Input A
     input  wire [7:0] B,   // Input B
     output wire [7:0] C    // Output C
