@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 `default_nettype none
+`timescale 1ns / 1ps
 
 module tt_um_Q3_project (
     input wire clk,          // Clock input
@@ -15,11 +16,15 @@ module tt_um_Q3_project (
     output wire [7:0] uio_oe
 );
 
-    // Internal Wire for MUX result
+    // Internal Wires for MUX and Comparator Results
     wire [6:0] mux_result;
+    wire compare_result;
 
     // MUX Logic for Lower 7 Bits
     assign mux_result = (ui_in[7] == 0) ? ui_in[6:0] : uio_in[6:0];
+
+    // Comparator Logic for MSB
+    assign compare_result = (ui_in < uio_in) ? 1'b0 : 1'b1;
 
     // Output Enable Configuration (Active high: 1=output)
     assign uio_out = uo_out;
@@ -32,8 +37,8 @@ module tt_um_Q3_project (
         end else if (ena) begin
             // Assign MUX result to uo_out[6:0]
             uo_out[6:0] <= mux_result;
-            // uo_out[7] is AND of ui_in[7] and uio_in[7]
-            uo_out[7] <= ui_in[7] & uio_in[7];
+            // C[7] = Comparator Result
+            uo_out[7] <= compare_result;
         end
     end
 
