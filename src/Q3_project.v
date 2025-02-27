@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module Q3_project (
+module tt_um_Q3_project (
     input  wire        clk,     // Clock input
     input  wire        rst_n,   // Active low reset
     input  wire [7:0]  A,       // Input A
