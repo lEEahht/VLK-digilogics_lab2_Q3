@@ -6,32 +6,34 @@
 `default_nettype none
 
 module tt_um_Q3_project (
-    input  wire        clk,     // Clock input
-    input  wire        rst_n,   // Active low reset
-    input  wire [7:0]  A,       // Input A
-    input  wire [7:0]  B,       // Input B
-    output reg  [7:0]  C        // Output C
+    input wire clk,          // Clock input
+    input wire rst_n,        // Active low reset
+    input wire [7:0] ui_in,  // Input A
+    input wire [7:0] uio_in, // Input B
+    output reg [7:0] uo_out, // Output C
+    output wire [7:0] uio_out,
+    output wire [7:0] uio_oe
 );
 
-    // Internal Wires for OR and XOR results
-    wire [6:0] or_result;
-    wire [6:0] xor_result;
+    // Internal Wire for MUX result
+    wire [6:0] mux_result;
 
-    // Bitwise OR for lower 7 bits
-    assign or_result = A[6:0] | B[6:0];
-    
-    // Bitwise XOR for lower 7 bits
-    assign xor_result = A[6:0] ^ B[6:0];
+    // MUX Logic for Lower 7 Bits
+    assign mux_result = (ui_in[7] == 0) ? ui_in[6:0] : uio_in[6:0];
+
+    // Output Enable Configuration (Active high: 1=output)
+    assign uio_out = uo_out;
+    assign uio_oe = 8'b11111111;
 
     // Sequential Logic for Output with Reset
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            C <= 8'b00000000;
+            uo_out <= 8'b00000000;
         end else begin
-            // MUX to select between OR and XOR
-            C[6:0] <= (A[7] == 0) ? or_result : xor_result;
-            // C[7] is always set to 1
-            C[7] <= 1;
+            // Assign MUX result to uo_out[6:0]
+            uo_out[6:0] <= mux_result;
+            // uo_out[7] is AND of ui_in[7] and uio_in[7]
+            uo_out[7] <= ui_in[7] & uio_in[7];
         end
     end
 
