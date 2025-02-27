@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 `default_nettype none
-`timescale 1ns / 1ps
 
 module tt_um_Q3_project (
     input wire clk,          // Clock input
